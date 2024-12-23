@@ -1,0 +1,30 @@
+.btn {
+	@apply px-4 py-1.5 border-b-4 rounded-xl text-white transition-colors;
+}
+
+.btn-blue {
+	@apply bg-blue-500 border-blue-600;
+}
+.btn-blue:hover {
+	@apply bg-blue-600 border-blue-700;
+}
+
+.btn-emerald {
+	@apply border-emerald-600 bg-emerald-500;
+}
+.btn-emerald:hover {
+	@apply border-emerald-700 bg-emerald-600;
+}
+
+/* Background */
+.home-page {
+	&.bg {
+		@apply bg-gradient-to-b from-[#04324e] to-[#051d2b];
+	}
+  .sand {
+    background: linear-gradient(90deg, rgb(146,135,93) 50%, rgb(155,145,101) 50%);
+    background-size: 48px;
+    clip-path: polygon(39% 74%, 62% 74%, 88% 64%, 100% 74%, 100% 100%, 0 100%, 0 67%, 17% 64%);
+    @apply fixed bottom-0 left-0 min-w-[100vw] w-[1600px] h-2/3;
+  }
+}

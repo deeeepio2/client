@@ -1,0 +1,27 @@
+{
+	"name": "client",
+	"version": "0.0.1",
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"build": "tsc -b && vite build",
+		"preview": "vite preview"
+	},
+	"dependencies": {
+		"motion": "^11.15.0",
+		"pixi.js": "^8.6.6",
+		"postcss-rename": "^0.6.1",
+		"preact": "^10.25.3",
+		"socket.io-client": "^4.8.1"
+	},
+	"devDependencies": {
+		"@preact/preset-vite": "^2.9.3",
+		"autoprefixer": "^10.4.20",
+		"cssnano": "^7.0.6",
+		"postcss": "^8.4.49",
+		"tailwindcss": "^3.4.17",
+		"typescript": "^5.7.2",
+		"vite": "^6.0.5",
+		"vite-plugin-html": "^3.2.2"
+	}
+}
