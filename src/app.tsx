@@ -3,7 +3,7 @@ import "./app.css";
 
 import { AnimatePresence, motion } from "motion/react";
 
-import { connect } from "./game/network";
+import { connect } from "./game";
 
 export let setHomePageVisible = (_visible: boolean) => {};
 export let setIsPlayingGame = (_isPlaying: boolean) => {};
