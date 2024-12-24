@@ -5,7 +5,9 @@
 	"scripts": {
 		"dev": "vite",
 		"build": "tsc -b && vite build",
-		"preview": "vite preview"
+		"preview": "vite preview",
+
+		"git-update": "git pull && git submodule update --remote --merge"
 	},
 	"dependencies": {
 		"motion": "^11.15.0",
