@@ -1,5 +1,7 @@
 import { setHomePageVisible, setIsPlayingGame } from "../app.tsx";
 
+import { decompress } from "../../shared/compression";
+
 import { encode } from "../../shared/websocket/index.ts";
 import { ctsPacketIds } from "../../shared/websocket/packets.ts";
 
@@ -8,7 +10,12 @@ import * as PIXI from "pixi.js";
 const serverUrl = "http://localhost:5005/";
 
 let currentSocket: WebSocket | null = null;
-export const connect = ({ name }: { name: string }) => {
+let map = {};
+export const connect = async ({ name }: { name: string }) => {
+	// fetch map
+	map = JSON.parse(await fetchMap());
+
+	// connect to websocket
 	if (currentSocket) {
 		currentSocket.close();
 	}
@@ -23,6 +30,12 @@ export const connect = ({ name }: { name: string }) => {
 		currentSocket.send(encode(ctsPacketIds.name, { name }));
 		start(currentSocket);
 	};
+};
+
+const fetchMap = async () => {
+	return await fetch(`${serverUrl}map`)
+		.then((res) => res.arrayBuffer())
+		.then((ab) => decompress(ab, "gzip"));
 };
 
 let app: PIXI.Application | null = null;
