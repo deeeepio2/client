@@ -1,26 +1,25 @@
-import type { DefaultEventsMap } from "@socket.io/component-emitter";
-import type { Socket } from "socket.io-client";
-
-import { io } from "socket.io-client";
+import { encode } from "../../shared/websocket";
+import { ctsPacketIds } from "../../shared/websocket/packets";
 
 import * as game from "./game";
 
 const serverUrl = "http://localhost:5005/";
 
-let currentSocket: Socket<DefaultEventsMap, DefaultEventsMap> | null = null;
+let currentSocket: WebSocket | null = null;
 
 export const connect = ({ name }: { name: string }) => {
 	if (currentSocket) {
-		currentSocket.disconnect();
+		currentSocket.close();
 	}
-	currentSocket = io(serverUrl, {
-		path: "/ws",
-	});
-	currentSocket.on("connect", () => {
+	currentSocket = new WebSocket(serverUrl);
+	currentSocket.onclose = () => {
+		currentSocket = null;
+	};
+	currentSocket.onopen = () => {
 		if (!currentSocket) return;
 
-		console.log("connected", currentSocket.id);
-		currentSocket.emit("name", name);
+		console.log("connected");
+		currentSocket.send(encode(ctsPacketIds.name, { name }));
 		game.start(currentSocket);
-	});
+	};
 };

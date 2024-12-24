@@ -6,15 +6,13 @@
 		"dev": "vite",
 		"build": "tsc -b && vite build",
 		"preview": "vite preview",
-
 		"git-update": "git pull && git submodule update --remote --merge"
 	},
 	"dependencies": {
 		"motion": "^11.15.0",
 		"pixi.js": "^8.6.6",
 		"postcss-rename": "^0.6.1",
-		"preact": "^10.25.3",
-		"socket.io-client": "^4.8.1"
+		"preact": "^10.25.3"
 	},
 	"devDependencies": {
 		"@preact/preset-vite": "^2.9.3",
