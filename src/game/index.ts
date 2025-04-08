@@ -1,19 +1,39 @@
+import * as PIXI from "pixi.js";
+
 import { setHomePageVisible, setIsPlayingGame } from "../app.tsx";
 
 import { decompress } from "../../shared/compression";
 
-import { encode } from "../../shared/websocket/index.ts";
-import { ctsPacketIds } from "../../shared/websocket/packets.ts";
+import { encode } from "../../shared/websocket/index";
+import { ctsPacketIds } from "../../shared/websocket/packets";
 
-import * as PIXI from "pixi.js";
+import { loadMap, type RawGameMap, type GameMap } from "../../shared/game/map";
+
+import { MapRenderer } from "./renderer";
+import { loadAssets } from "./assetLoader.ts";
 
 const serverUrl = "http://localhost:5005/";
 
 let currentSocket: WebSocket | null = null;
-let map = {};
+let map: GameMap;
 export const connect = async ({ name }: { name: string }) => {
-	// fetch map
-	map = JSON.parse(await fetchMap());
+	await Promise.all([
+		// fetch map
+		new Promise((resolve) => {
+			(async () => {
+				map = loadMap(JSON.parse(await fetchMap()));
+				resolve(null);
+			})();
+		}),
+
+		// load textures
+		new Promise((resolve) => {
+			(async () => {
+				await loadAssets();
+				resolve(null);
+			})();
+		}),
+	]);
 
 	// connect to websocket
 	if (currentSocket) {
@@ -72,6 +92,8 @@ const start = async (socket: WebSocket) => {
 	socketText.x = app.screen.width / 2 - socketText.width / 2;
 	socketText.y = app.screen.height / 2 - socketText.height / 2;
 	app.stage.addChild(socketText);
+
+	const game = new Game({ websocket: socket, mapData: map, stage: app.stage });
 };
 
 const destroy = async () => {
@@ -81,3 +103,26 @@ const destroy = async () => {
 		(document.getElementById("game-canvas") as HTMLDivElement).innerHTML = "";
 	app = null;
 };
+
+class Game {
+	websocket: WebSocket;
+	mapData: GameMap;
+	stage: PIXI.Container<PIXI.ContainerChild>;
+
+	mapContainer: PIXI.Container<PIXI.ContainerChild>;
+	mapRenderer: MapRenderer;
+
+	constructor({
+		websocket,
+		mapData,
+		stage,
+	}: { websocket: WebSocket; mapData: GameMap; stage: PIXI.Container<PIXI.ContainerChild> }) {
+		this.websocket = websocket;
+		this.mapData = mapData;
+		this.stage = stage;
+
+		this.mapContainer = new PIXI.Container();
+		this.stage.addChild(this.mapContainer);
+		this.mapRenderer = new MapRenderer({ map: this.mapData, container: this.mapContainer });
+	}
+}
