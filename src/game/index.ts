@@ -7,7 +7,7 @@ import { decompress } from "../../shared/compression";
 import { encode } from "../../shared/websocket/index";
 import { ctsPacketIds } from "../../shared/websocket/packets";
 
-import { loadMap, type RawGameMap, type GameMap } from "../../shared/game/map";
+import { loadMap, type GameMap } from "../../shared/game/map";
 
 import { MapRenderer } from "./renderer";
 import { loadAssets } from "./assetLoader.ts";

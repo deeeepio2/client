@@ -143,6 +143,11 @@ export function renderGradientShape(
 	const maxY: number = points.reduce((a, b) => (b.y > a ? b.y : a), Number.NEGATIVE_INFINITY);
 	const shapeHeight: number = maxY - minY;
 
+	for (let i = 1; i < points.length; i++) {
+		shape.lineTo(points[i].x, points[i].y);
+	}
+	shape.closePath();
+
 	if (gradientStart === gradientStop) {
 		shape.fill({
 			color: gradientStart,
@@ -153,10 +158,7 @@ export function renderGradientShape(
 			matrix: new PIXI.Matrix(1, 0, 0, 1, points[0].x, minY),
 		});
 	}
-	for (let i = 1; i < points.length; i++) {
-		shape.lineTo(points[i].x, points[i].y);
-	}
-	shape.closePath();
+
 	return shape;
 }
 
@@ -188,8 +190,13 @@ export function renderTerrainShape(
 	texture: number | string,
 	isBackground: boolean,
 ) {
-	const shape: PIXI.Graphics = new PIXI.Graphics();
+	const shape = new PIXI.Graphics();
 	shape.moveTo(points[0].x, points[0].y);
+
+	for (let i = 1; i < points.length; i++) {
+		shape.lineTo(points[i].x, points[i].y);
+	}
+	shape.closePath();
 
 	shape.fill({
 		texture:
@@ -198,11 +205,9 @@ export function renderTerrainShape(
 				: PIXI.Texture.from(texture.replace("assets/terrains", "/textures")),
 		color: "ffffff",
 		matrix: new PIXI.Matrix(0.1, 0, 0, 0.1, isBackground ? 2 : 0, isBackground ? 2 : 0),
+		textureSpace: "global",
 	});
-	for (let i = 1; i < points.length; i++) {
-		shape.lineTo(points[i].x, points[i].y);
-	}
-	shape.closePath();
+
 	return shape;
 }
 
@@ -233,19 +238,19 @@ export function renderWaterBorder(
 		if (current.x > last.x && current.x - last.x > 10) {
 			const top = new PIXI.Graphics();
 			top.moveTo(last.x, last.y - 1.5);
-			top.beginFill(borderColor);
 			top.lineTo(current.x, current.y - 1.5);
 			top.lineTo(current.x, current.y);
 			top.lineTo(last.x, last.y);
 			top.closePath();
+			top.fill(borderColor);
 
 			const bottom = new PIXI.Graphics();
 			bottom.moveTo(last.x, last.y - 0.1);
-			bottom.beginFill(borderColor);
 			bottom.lineTo(current.x, current.y - 0.1);
 			bottom.lineTo(current.x, current.y + 1.5 - 0.1);
 			bottom.lineTo(last.x, last.y + 1.5 - 0.1);
 			bottom.closePath();
+			bottom.fill(borderColor);
 
 			topBorders.push(top);
 			bottomBorders.push(bottom);
